@@ -30,16 +30,12 @@ function love.keypressed(key)
     if key == "up" then
         buttons[selectedButtonIndex].selected = false
         selectedButtonIndex = selectedButtonIndex - 1
-        if selectedButtonIndex < 1 then
-            selectedButtonIndex = buttonCount
-        end
+        if selectedButtonIndex < 1 then selectedButtonIndex = buttonCount end
         buttons[selectedButtonIndex].selected = true
     elseif key == "down" then
         buttons[selectedButtonIndex].selected = false
         selectedButtonIndex = selectedButtonIndex + 1
-        if selectedButtonIndex > buttonCount then
-            selectedButtonIndex = 1
-        end
+        if selectedButtonIndex > buttonCount then selectedButtonIndex = 1 end
         buttons[selectedButtonIndex].selected = true
     elseif key == "return" then
         if selectedButtonIndex == 1 then
@@ -53,10 +49,14 @@ function love.keypressed(key)
 end
 
 function love.load()
-    local button1 = Button.new(buttonX, 200, buttonWidth, buttonHeight, "Start game")
-    local button2 = Button.new(buttonX, 200 + buttonSpacing, buttonWidth, buttonHeight, "Exit")
-    local button3 = Button.new(buttonX, 200 + 2 * buttonSpacing, buttonWidth, buttonHeight, "")
-    local button4 = Button.new(buttonX, 200 + 3 * buttonSpacing, buttonWidth, buttonHeight, "")
+    local button1 = Button.new(buttonX, 200, buttonWidth, buttonHeight,
+                               "Start game")
+    local button2 = Button.new(buttonX, 200 + buttonSpacing, buttonWidth,
+                               buttonHeight, "Exit")
+    local button3 = Button.new(buttonX, 200 + 2 * buttonSpacing, buttonWidth,
+                               buttonHeight, "")
+    local button4 = Button.new(buttonX, 200 + 3 * buttonSpacing, buttonWidth,
+                               buttonHeight, "")
 
     table.insert(buttons, button1)
     table.insert(buttons, button2)
@@ -74,11 +74,9 @@ end
 
 function love.draw()
     if game then
-    game:draw() -- Отрисовка игры, если она активна
+        game:draw() -- Отрисовка игры, если она активна
     else
-        for _, button in pairs(buttons) do
-            button:draw()
-        end
+        for _, button in pairs(buttons) do button:draw() end
 
         love.graphics.setFont(titleFont)
         love.graphics.setColor(1, 1, 1)
