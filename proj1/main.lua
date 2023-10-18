@@ -1,26 +1,33 @@
+-- TODO
+-- Добавить в меню кнопки запуска ии, изменение скорости игры
+-- скейл
+
 -- main.lua
+
+-- Изображения для фоновых картинок
+local mainMenuBackground = love.graphics.newImage("img/bg_menu.png")
+
+-- Изображение для кнопки начать игру
+local buttonStart = love.graphics.newImage("img/button_play.png")
+
+-- Изображение для кнопки выйти из игры
+local buttonExit = love.graphics.newImage("img/button_exit.png")
+
 local Button = require("button")
 local Game = require("game")
 
 local buttons = {}
 local selectedButtonIndex = 1
 
+love.window.setMode(mainMenuBackground:getWidth(), mainMenuBackground:getHeight())
+
 local screenWidth = love.graphics.getWidth()
 local screenHeight = love.graphics.getHeight()
 
-local titleFont = love.graphics.newFont("fonts/VisitorRus.ttf", 48)
-local buttonFont = love.graphics.newFont("fonts/EightBits.ttf", 24)
-
-local titleText = "Pong"
-local titleWidth = titleFont:getWidth(titleText)
-local titleHeight = titleFont:getHeight(titleText)
-local titleX = (screenWidth - titleWidth) / 2
-local titleY = (screenHeight - titleHeight) / 4
-
-local buttonWidth = 200
-local buttonHeight = 50
+local buttonWidth = buttonStart:getWidth()
+local buttonHeight = buttonStart:getHeight()
 local buttonX = (screenWidth - buttonWidth) / 2
-local buttonSpacing = 60
+local buttonY = (screenHeight - buttonHeight) / 2
 
 local game
 
@@ -37,6 +44,7 @@ function love.keypressed(key)
         selectedButtonIndex = selectedButtonIndex + 1
         if selectedButtonIndex > buttonCount then selectedButtonIndex = 1 end
         buttons[selectedButtonIndex].selected = true
+    -- Тут из-за кнопки return срабатывает try_again кнопка и без дополнительной ее обработки в game.lua
     elseif key == "return" then
         if selectedButtonIndex == 1 then
             -- Нажата кнопка "Start game"
@@ -49,19 +57,14 @@ function love.keypressed(key)
 end
 
 function love.load()
-    local button1 = Button.new(buttonX, 200, buttonWidth, buttonHeight,
-                               "Start game")
-    local button2 = Button.new(buttonX, 200 + buttonSpacing, buttonWidth,
-                               buttonHeight, "Exit")
-    local button3 = Button.new(buttonX, 200 + 2 * buttonSpacing, buttonWidth,
-                               buttonHeight, "")
-    local button4 = Button.new(buttonX, 200 + 3 * buttonSpacing, buttonWidth,
-                               buttonHeight, "")
 
-    table.insert(buttons, button1)
-    table.insert(buttons, button2)
-    table.insert(buttons, button3)
-    table.insert(buttons, button4)
+    local buttonsMargin = 25
+
+    local buttonStartGame = Button.new(buttonX, buttonY - buttonsMargin, buttonWidth, buttonHeight, "", buttonStart)
+    local buttonExitFromGame = Button.new(buttonX, buttonY + buttonHeight, buttonWidth, buttonHeight, "", buttonExit)
+
+    table.insert(buttons, buttonStartGame)
+    table.insert(buttons, buttonExitFromGame)
 
     buttons[selectedButtonIndex].selected = true
 end
@@ -73,13 +76,16 @@ function love.update(dt)
 end
 
 function love.draw()
+
     if game then
         game:draw() -- Отрисовка игры, если она активна
     else
-        for _, button in pairs(buttons) do button:draw() end
-
-        love.graphics.setFont(titleFont)
-        love.graphics.setColor(1, 1, 1)
-        love.graphics.print(titleText, titleX, titleY)
+        -- Отрисовка фона для главного меню
+        love.graphics.draw(mainMenuBackground, 0, 0)
+        
+        -- Затем отрисовка кнопок и текста меню
+        for _, button in pairs(buttons) do 
+            button:draw() 
+        end
     end
 end

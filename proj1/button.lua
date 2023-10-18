@@ -2,9 +2,7 @@
 local Button = {}
 Button.__index = Button
 
-local buttonFont = love.graphics.newFont("fonts/EightBits.ttf", 24)
-
-function Button.new(x, y, width, height, text)
+function Button.new(x, y, width, height, text, bgImage)
     local self = setmetatable({}, Button)
     self.x = x
     self.y = y
@@ -12,27 +10,32 @@ function Button.new(x, y, width, height, text)
     self.height = height
     self.selected = false
     self.text = text
-    self.font = buttonFont
+    self.bgImage = bgImage
     return self
 end
 
+
 function Button:draw()
     -- Отрисовываем кнопку
-    love.graphics.setFont(self.font)
-    love.graphics.setColor(1, 1, 1)
-    
-    if self.selected then
-        love.graphics.setColor(1, 0, 0)
+    if self.bgImage then
+        -- Если кнопка не выбрана, то затемняем
+        if self.selected == false then
+            love.graphics.setColor(0.7, 0.7, 0.7) -- Устанавливаем темный цвет
+            love.graphics.draw(self.bgImage, self.x, self.y, 0, self.width / self.bgImage:getWidth(), self.height / self.bgImage:getHeight())
+            love.graphics.setColor(1, 1, 1) -- Восстанавливаем цвет в значение по умолчанию
+        else
+            love.graphics.draw(self.bgImage, self.x, self.y, 0, self.width / self.bgImage:getWidth(), self.height / self.bgImage:getHeight())
+        end
+    else
+        love.graphics.setColor(1, 1, 1)
+        if self.selected then
+            love.graphics.setColor(0, 0, 0)
+        end
         love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
         love.graphics.setColor(1, 1, 1)
-    else
-        love.graphics.rectangle("line", self.x, self.y, self.width, self.height)
     end
-    
-    local textWidth = self.font:getWidth(self.text)
-    local textHeight = self.font:getHeight(self.text)
-    
-    love.graphics.print(self.text, self.x + (self.width - textWidth) / 2, self.y + (self.height - textHeight) / 2)
 end
+
+
 
 return Button
